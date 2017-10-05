@@ -30,6 +30,8 @@ import java.util.List;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamReader;
 
+import org.projectodd.vdx.core.ErrorType;
+import org.projectodd.vdx.core.ValidationError;
 import org.wildfly.common.expression.Expression;
 import org.wildfly.common.net.CidrAddress;
 import org.wildfly.common.net.Inet;
@@ -285,11 +287,11 @@ public interface ConfigurationXMLStreamReader extends XMLStreamReader, AutoClose
     default ConfigXMLParseException unexpectedElement() {
         final String namespaceURI = getNamespaceURI();
         final String localName = getLocalName();
-        if (namespaceURI == null) {
-            return msg.unexpectedElement(localName, getLocation());
-        } else {
-            return msg.unexpectedElement(localName, namespaceURI, getLocation());
-        }
+        final ConfigXMLParseException ex = namespaceURI == null ?
+                msg.unexpectedElement(localName, getLocation()) :
+                msg.unexpectedElement(localName, namespaceURI, getLocation());
+
+        return new ConfigXMLParseException(ValidationError.from(ex, ErrorType.UNEXPECTED_ELEMENT).element(getName()), ex); // TODO simplify?
     }
 
     /**

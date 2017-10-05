@@ -49,6 +49,7 @@
         <version.org.jboss.logmanager>2.0.7.Final</version.org.jboss.logmanager>
         <version.org.wildfly.checkstyle-config>1.0.5.Final</version.org.wildfly.checkstyle-config>
         <version.org.wildfly.common>1.2.0.Final</version.org.wildfly.common>
+        <version.org.projectodd.vdx.vdx>1.1.7-SNAPSHOT</version.org.projectodd.vdx.vdx>
     </properties>
 
     <build>
@@ -152,6 +153,12 @@
             <groupId>org.jboss.logging</groupId>
             <artifactId>jboss-logging</artifactId>
             <version>${version.org.jboss.logging.jboss-logging}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectodd.vdx</groupId>
+            <artifactId>vdx-core</artifactId>
+            <version>${version.org.projectodd.vdx.vdx}</version>
         </dependency>
 
         <dependency>

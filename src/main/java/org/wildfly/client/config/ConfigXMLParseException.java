@@ -20,6 +20,9 @@ package org.wildfly.client.config;
 
 import static org.wildfly.client.config._private.ConfigMessages.msg;
 
+import org.projectodd.vdx.core.ValidationError;
+import org.projectodd.vdx.core.XMLStreamValidationException;
+
 import java.net.URI;
 
 import javax.xml.stream.Location;
@@ -29,15 +32,15 @@ import javax.xml.stream.XMLStreamReader;
 /**
  * @author <a href="mailto:david.lloyd@redhat.com">David M. Lloyd</a>
  */
-public class ConfigXMLParseException extends XMLStreamException {
+public class ConfigXMLParseException extends XMLStreamValidationException {
 
     private static final long serialVersionUID = -1880381457871462141L;
-
     /**
      * Constructs a new {@code ConfigXMLParseException} instance.  The message is left blank ({@code null}), and no
      * cause is specified.
      */
     public ConfigXMLParseException() {
+        super(null, null);
     }
 
     /**
@@ -46,7 +49,7 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param msg the message
      */
     public ConfigXMLParseException(final String msg) {
-        super(msg);
+        super(msg, null);
     }
 
     /**
@@ -57,7 +60,7 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param cause the cause
      */
     public ConfigXMLParseException(final Throwable cause) {
-        super(cause);
+        super(null, cause);
     }
 
     /**
@@ -77,7 +80,7 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param location the location of the exception
      */
     public ConfigXMLParseException(final Location location) {
-        this(msg.parseError(), XMLLocation.toXMLLocation(location), 0);
+        this(msg.parseError(), XMLLocation.toXMLLocation(location));
     }
 
     /**
@@ -87,7 +90,7 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param location the location of the exception
      */
     public ConfigXMLParseException(final String msg, final Location location) {
-        this(msg, XMLLocation.toXMLLocation(location), 0);
+        this(msg, XMLLocation.toXMLLocation(location));
     }
 
     /**
@@ -99,7 +102,7 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param location the location of the exception
      */
     public ConfigXMLParseException(final Throwable cause, final Location location) {
-        this(msg.parseError(), XMLLocation.toXMLLocation(location), cause, 0);
+        this(msg.parseError(), XMLLocation.toXMLLocation(location), cause);
     }
 
     /**
@@ -109,7 +112,7 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param cause the cause
      */
     public ConfigXMLParseException(final String msg, final Location location, final Throwable cause) {
-        this(msg, XMLLocation.toXMLLocation(location), cause, 0);
+        this(msg, XMLLocation.toXMLLocation(location), cause);
     }
 
     /**
@@ -119,7 +122,7 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param reader an XML reader at the position of the problem
      */
     public ConfigXMLParseException(final XMLStreamReader reader) {
-        this(msg.parseError(), XMLLocation.toXMLLocation(reader.getLocation()), 0);
+        this(msg.parseError(), XMLLocation.toXMLLocation(reader.getLocation()));
     }
 
     /**
@@ -129,7 +132,7 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param reader an XML reader at the position of the problem
      */
     public ConfigXMLParseException(final String msg, final XMLStreamReader reader) {
-        this(msg, XMLLocation.toXMLLocation(reader.getLocation()), 0);
+        this(msg, XMLLocation.toXMLLocation(reader.getLocation()));
     }
 
     /**
@@ -141,7 +144,7 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param reader an XML reader at the position of the problem
      */
     public ConfigXMLParseException(final Throwable cause, final XMLStreamReader reader) {
-        this(msg.parseError(), XMLLocation.toXMLLocation(reader.getLocation()), cause, 0);
+        this(msg.parseError(), XMLLocation.toXMLLocation(reader.getLocation()), cause);
     }
 
     /**
@@ -152,7 +155,18 @@ public class ConfigXMLParseException extends XMLStreamException {
      * @param cause the cause
      */
     public ConfigXMLParseException(final String msg, final XMLStreamReader reader, final Throwable cause) {
-        this(msg, XMLLocation.toXMLLocation(reader.getLocation()), cause, 0);
+        this(msg, XMLLocation.toXMLLocation(reader.getLocation()), cause);
+    }
+
+    /**
+     * Constructs a new {@code ConfigXMLParseException} instance with an validation error and cause.
+     *
+     * @param validationError the validation error
+     * @param cause the cause
+     */
+    public ConfigXMLParseException(final ValidationError validationError, final Throwable cause) {
+        super(cause.getMessage(), validationError, cause);
+        this.location = validationError.location();
     }
 
     /**
@@ -272,12 +286,12 @@ public class ConfigXMLParseException extends XMLStreamException {
         }
     }
 
-    private ConfigXMLParseException(final String msg, final XMLLocation location, @SuppressWarnings("unused") int ignored) {
-        super(msg + location);
+    private ConfigXMLParseException(final String msg, final XMLLocation location) {
+        super(msg + location, null);
         this.location = location;
     }
 
-    private ConfigXMLParseException(final String msg, final XMLLocation location, final Throwable cause, @SuppressWarnings("unused") int ignored) {
+    private ConfigXMLParseException(final String msg, final XMLLocation location, final Throwable cause) {
         super(msg + location, cause);
         this.location = location;
     }
